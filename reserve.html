@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="hy"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Ամրագրում</title>
+</head><body>
+<!-- navbar --> <div class="nav"><div class="container"><div><b>La Tavola</b></div>
+<div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
+<a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
+
+<div class="container">
+  <h2>Ամրագրում</h2>
+  <div class="card">
+    <label>Օգտվողի ID (մուտք գործելուց հետո) </label>
+    <input id="cid" class="input" placeholder="օր. 1">
+    <label>Ամսաթիվ</label>
+    <input id="date" type="date" class="input">
+    <label>Անձերի քանակ</label>
+    <input id="guests" type="number" class="input" min="1">
+    <label>Սեղանի համար</label>
+    <input id="table" type="number" class="input" min="1">
+    <br><button class="btn btn-primary" id="btnRes">Ամրագրել</button>
+    <p id="resMsg"></p>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+document.getElementById('btnRes').onclick = async () => {
+  const fd = new FormData();
+  fd.append('customer_id', document.getElementById('cid').value.trim());
+  fd.append('reservationdate', document.getElementById('date').value);
+  fd.append('numberofguests', document.getElementById('guests').value);
+  fd.append('table_number', document.getElementById('table').value);
+  const r = await fetch('php/reservation_create.php', {method:'POST', body:fd});
+  const j = await r.json().catch(()=>({ok:false,msg:'Սերվերի սխալ'}));
+  document.getElementById('resMsg').textContent = j.ok ? 'Ամրագրումը հաջողվեց' : (j.msg||'Սխալ');
+};
+</script>
+</body></html>

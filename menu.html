@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="hy"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Մենյու</title>
+</head><body>
+<!-- navbar --> <div class="nav"><div class="container"><div><b>La Tavola</b></div>
+<div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
+<a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
+
+<div class="container">
+  <h2>Մենյու</h2>
+  <div id="menuGrid" class="grid"></div>
+</div>
+<script src="js/cart.js"></script>
+<script src="js/api.js"></script>
+<script>
+fetch('php/menu_list.php')
+ .then(r=>r.json())
+ .then(items=>{
+   const g=document.getElementById('menuGrid');
+   items.forEach(m=>{
+     const c=document.createElement('div'); c.className='card';
+     c.innerHTML = `
+      <img src="${m.image}" alt="${m.name}">
+      <h3>${m.name}</h3>
+      <p><b>Գին՝ ${Number(m.price).toFixed(2)} ֏</b></p>
+      <button class="btn btn-primary">Ավելացնել պայուսակ</button>
+     `;
+     c.querySelector('button').onclick=()=>addToCart(m);
+     g.appendChild(c);
+   });
+ });
+</script>
+</body></html>

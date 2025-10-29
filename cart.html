@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="hy"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Վճարում</title>
+</head><body>
+<!-- navbar --> <div class="nav"><div class="container"><div><b>La Tavola</b></div>
+<div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
+<a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
+
+<div class="container">
+  <h2>Պայուսակ և վճարում</h2>
+  <div id="bag" class="grid"></div>
+  <h3 id="total"></h3>
+
+  <div class="card">
+    <label>Հաճախորդի ID</label>
+    <input id="cid" class="input" placeholder="օր. 1">
+    <label>Վճարման եղանակ</label>
+    <select id="pay" class="input">
+      <option>Քարտ (թեստ)</option>
+      <option>Կանխիկ տեղում</option>
+    </select>
+    <br><button class="btn btn-primary" id="btnPay">Հաստատել պատվերը</button>
+    <p id="msg"></p>
+  </div>
+</div>
+
+<script src="js/cart.js"></script>
+<script src="js/api.js"></script>
+<script>
+const bagDiv = document.getElementById('bag');
+function render(){
+  bagDiv.innerHTML='';
+  const items = getCart();
+  let sum=0;
+  items.forEach(it=>{
+    sum += it.price*it.qty;
+    const c=document.createElement('div'); c.className='card';
+    c.innerHTML = `<h3>${it.name}</h3>
+    <p>Գին՝ ${it.price.toFixed(2)} ֏ • Քանակ՝ ${it.qty}</p>
+    <button class="btn" onclick="changeQty(${it.menuitem_id},1)">+1</button>
+    <button class="btn" onclick="changeQty(${it.menuitem_id},-1)">-1</button>`;
+    bagDiv.appendChild(c);
+  });
+  document.getElementById('total').textContent = 'Ընդհանուր՝ ' + sum.toFixed(2) + ' ֏';
+}
+render();
+
+document.getElementById('btnPay').onclick = async () => {
+  const fd = new FormData();
+  fd.append('customer_id', document.getElementById('cid').value.trim());
+  fd.append('paymentmethod', document.getElementById('pay').value);
+  fd.append('items', JSON.stringify(getCart()));
+  const r = await fetch('php/order_create.php', {method:'POST', body:fd});
+  const j = await r.json().catch(()=>({ok:false,msg:'Սերվերի սխալ'}));
+  document.getElementById('msg').textContent = j.ok ? ('Պատվեր #' + j.order_id + ' — հաջողվեց') : (j.msg||'Սխալ');
+  if (j.ok) { clearCart(); render(); }
+};
+</script>
+</body></html>

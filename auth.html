@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="hy"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Մուտք / Գրանցում</title>
+</head><body>
+<!-- navbar --> <div class="nav"><div class="container"><div><b>La Tavola</b></div>
+<div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
+<a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
+
+<div class="container grid">
+  <div class="card">
+    <h3>Գրանցում</h3>
+    <input id="r_name" class="input" placeholder="Անուն">
+    <input id="r_lastname" class="input" placeholder="Ազգանուն">
+    <input id="r_email" class="input" placeholder="Էլ. փոստ">
+    <input id="r_phone" class="input" placeholder="Հեռախոս">
+    <input id="r_pass" class="input" type="password" placeholder="Գաղտնաբառ">
+    <br><button class="btn btn-primary" id="btnReg">Գրանցվել</button>
+    <p id="regMsg"></p>
+  </div>
+
+  <div class="card">
+    <h3>Մուտք</h3>
+    <input id="l_email" class="input" placeholder="Էլ. փոստ">
+    <input id="l_pass" class="input" type="password" placeholder="Գաղտնաբառ">
+    <br><button class="btn btn-primary" id="btnLogin">Մուտք գործել</button>
+    <p id="logMsg"></p>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+btnReg.onclick = async ()=>{
+  const fd = new FormData();
+  fd.append('name', r_name.value.trim());
+  fd.append('lastname', r_lastname.value.trim());
+  fd.append('email', r_email.value.trim());
+  fd.append('phone', r_phone.value.trim());
+  fd.append('password', r_pass.value);
+  const r = await fetch('php/auth_register.php',{method:'POST',body:fd});
+  const j = await r.json().catch(()=>({ok:false,msg:'Սերվերի սխալ'}));
+  regMsg.textContent = j.ok ? 'Գրանցումը հաջողվեց, այժմ մուտք գործեք' : (j.msg||'Սխալ');
+};
+
+btnLogin.onclick = async ()=>{
+  const fd = new FormData();
+  fd.append('email', l_email.value.trim());
+  fd.append('password', l_pass.value);
+  const r = await fetch('php/auth_login.php',{method:'POST',body:fd});
+  const j = await r.json().catch(()=>({ok:false,msg:'Սխալ'}));
+  if (j.ok){
+    localStorage.setItem('customer', JSON.stringify(j));
+    logMsg.textContent = 'Բարի վերադարձ, ' + j.name + ' ' + j.lastname + ' (ID: '+ j.customer_id + ')';
+  } else logMsg.textContent = j.msg || 'Սխալ';
+};
+</script>
+</body></html>
