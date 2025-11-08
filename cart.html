@@ -2,25 +2,48 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="assets/style.css"><title>Վճարում</title>
 </head><body>
-<!-- navbar --> <div class="nav"><div class="container"><div><b>La Tavola</b></div>
+<div class="nav"><div class="container"><div><b>La Tavola</b></div>
 <div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
 <a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
 
-<div class="container">
-  <h2>Պայուսակ և վճարում</h2>
-  <div id="bag" class="grid"></div>
-  <h3 id="total"></h3>
+<div class="page-header">
+  <div class="container">
+    <h1>Ձեր Պայուսակ</h1>
+    <p>Ստուգեք ձեր պատվերը և ավարտեք ցանցը</p>
+  </div>
+</div>
 
-  <div class="card">
-    <label>Հաճախորդի ID</label>
-    <input id="cid" class="input" placeholder="օր. 1">
-    <label>Վճարման եղանակ</label>
-    <select id="pay" class="input">
-      <option>Քարտ (թեստ)</option>
-      <option>Կանխիկ տեղում</option>
-    </select>
-    <br><button class="btn btn-primary" id="btnPay">Հաստատել պատվերը</button>
-    <p id="msg"></p>
+<div class="container">
+  <div class="checkout-wrapper">
+    <div class="cart-items">
+      <h2>Պատվերի իրեր</h2>
+      <div id="bag" class="cart-grid"></div>
+      <div class="cart-summary">
+        <h3 id="total"></h3>
+      </div>
+    </div>
+
+    <div class="checkout-form">
+      <h2>Վճարման Տեղեկատվություն</h2>
+      <form id="checkoutForm">
+        <div class="form-group">
+          <label for="cid">Հաճախորդի ID</label>
+          <input id="cid" class="input" type="text" placeholder="Օր. 1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="pay">Վճարման եղանակ</label>
+          <select id="pay" class="input">
+            <option value="">Ընտրել վճարման եղանակ</option>
+            <option>Քարտ (թեստ)</option>
+            <option>Կանխիկ տեղում</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-submit" id="btnPay">Հաստատել Պատվերը</button>
+        <p id="msg" class="form-message"></p>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -32,16 +55,28 @@ function render(){
   bagDiv.innerHTML='';
   const items = getCart();
   let sum=0;
-  items.forEach(it=>{
-    sum += it.price*it.qty;
-    const c=document.createElement('div'); c.className='card';
-    c.innerHTML = `<h3>${it.name}</h3>
-    <p>Գին՝ ${it.price.toFixed(2)} ֏ • Քանակ՝ ${it.qty}</p>
-    <button class="btn" onclick="changeQty(${it.menuitem_id},1)">+1</button>
-    <button class="btn" onclick="changeQty(${it.menuitem_id},-1)">-1</button>`;
-    bagDiv.appendChild(c);
-  });
-  document.getElementById('total').textContent = 'Ընդհանուր՝ ' + sum.toFixed(2) + ' ֏';
+  if (items.length === 0) {
+    bagDiv.innerHTML = '<p class="empty-cart">Պայուսակը դատարկ է</p>';
+  } else {
+    items.forEach(it=>{
+      sum += it.price*it.qty;
+      const c=document.createElement('div'); c.className='cart-item';
+      c.innerHTML = `
+        <div class="item-info">
+          <h4>${it.name}</h4>
+          <p class="item-price">${it.price.toFixed(2)} ֏</p>
+        </div>
+        <div class="item-controls">
+          <button type="button" class="qty-btn" onclick="changeQty(${it.menuitem_id},-1)">−</button>
+          <span class="qty-display">${it.qty}</span>
+          <button type="button" class="qty-btn" onclick="changeQty(${it.menuitem_id},1)">+</button>
+          <span class="item-total">${(it.price*it.qty).toFixed(2)} ֏</span>
+        </div>
+      `;
+      bagDiv.appendChild(c);
+    });
+  }
+  document.getElementById('total').textContent = 'Ընդամենը՝ ' + sum.toFixed(2) + ' ֏';
 }
 render();
 
@@ -52,7 +87,9 @@ document.getElementById('btnPay').onclick = async () => {
   fd.append('items', JSON.stringify(getCart()));
   const r = await fetch('php/order_create.php', {method:'POST', body:fd});
   const j = await r.json().catch(()=>({ok:false,msg:'Սերվերի սխալ'}));
-  document.getElementById('msg').textContent = j.ok ? ('Պատվեր #' + j.order_id + ' — հաջողվեց') : (j.msg||'Սխալ');
+  const msg = document.getElementById('msg');
+  msg.textContent = j.ok ? ('Պատվեր #' + j.order_id + ' — հաջողվեց') : (j.msg||'Սխալ');
+  msg.className = 'form-message ' + (j.ok ? 'success' : 'error');
   if (j.ok) { clearCart(); render(); }
 };
 </script>

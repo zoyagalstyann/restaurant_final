@@ -2,14 +2,21 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="assets/style.css"><title>Մենյու</title>
 </head><body>
-<!-- navbar --> <div class="nav"><div class="container"><div><b>La Tavola</b></div>
+<div class="nav"><div class="container"><div><b>La Tavola</b></div>
 <div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
 <a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
 
-<div class="container">
-  <h2>Մենյու</h2>
-  <div id="menuGrid" class="grid"></div>
+<div class="page-header">
+  <div class="container">
+    <h1>Մեր Մենյու</h1>
+    <p>Բացահայտեք բարձրակարգ իտալական համերի հետաոթ տեսականի</p>
+  </div>
 </div>
+
+<div class="container">
+  <div id="menuGrid" class="menu-grid"></div>
+</div>
+
 <script src="js/cart.js"></script>
 <script src="js/api.js"></script>
 <script>
@@ -18,12 +25,16 @@ fetch('php/menu_list.php')
  .then(items=>{
    const g=document.getElementById('menuGrid');
    items.forEach(m=>{
-     const c=document.createElement('div'); c.className='card';
+     const c=document.createElement('div'); c.className='menu-card';
      c.innerHTML = `
-      <img src="${m.image}" alt="${m.name}">
-      <h3>${m.name}</h3>
-      <p><b>Գին՝ ${Number(m.price).toFixed(2)} ֏</b></p>
-      <button class="btn btn-primary">Ավելացնել պայուսակ</button>
+      <div class="menu-card-image">
+        <img src="${m.image}" alt="${m.name}">
+      </div>
+      <div class="menu-card-content">
+        <h3>${m.name}</h3>
+        <p class="menu-price">${Number(m.price).toFixed(2)} ֏</p>
+        <button class="btn btn-add">Ավելացնել պայուսակ</button>
+      </div>
      `;
      c.querySelector('button').onclick=()=>addToCart(m);
      g.appendChild(c);

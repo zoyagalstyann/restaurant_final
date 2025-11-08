@@ -2,28 +2,68 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="assets/style.css"><title>Մուտք / Գրանցում</title>
 </head><body>
-<!-- navbar --> <div class="nav"><div class="container"><div><b>La Tavola</b></div>
+<div class="nav"><div class="container"><div><b>La Tavola</b></div>
 <div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
 <a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
 
-<div class="container grid">
-  <div class="card">
-    <h3>Գրանցում</h3>
-    <input id="r_name" class="input" placeholder="Անուն">
-    <input id="r_lastname" class="input" placeholder="Ազգանուն">
-    <input id="r_email" class="input" placeholder="Էլ. փոստ">
-    <input id="r_phone" class="input" placeholder="Հեռախոս">
-    <input id="r_pass" class="input" type="password" placeholder="Գաղտնաբառ">
-    <br><button class="btn btn-primary" id="btnReg">Գրանցվել</button>
-    <p id="regMsg"></p>
+<div class="page-header">
+  <div class="container">
+    <h1>Ձեր Հաշիվ</h1>
+    <p>Մուտք գործեք կամ գրանցվեք La Tavola ընտանիքում</p>
   </div>
+</div>
 
-  <div class="card">
-    <h3>Մուտք</h3>
-    <input id="l_email" class="input" placeholder="Էլ. փոստ">
-    <input id="l_pass" class="input" type="password" placeholder="Գաղտնաբառ">
-    <br><button class="btn btn-primary" id="btnLogin">Մուտք գործել</button>
-    <p id="logMsg"></p>
+<div class="container">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <h2>Գրանցում</h2>
+        <p>Ստեղծեք նոր հաշիվ</p>
+      </div>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="r_name">Անուն</label>
+          <input id="r_name" class="input" type="text" placeholder="Ձեր անունը" required>
+        </div>
+        <div class="form-group">
+          <label for="r_lastname">Ազգանուն</label>
+          <input id="r_lastname" class="input" type="text" placeholder="Ձեր ազգանունը" required>
+        </div>
+        <div class="form-group">
+          <label for="r_email">Էլ. փոստ</label>
+          <input id="r_email" class="input" type="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="r_phone">Հեռախոս</label>
+          <input id="r_phone" class="input" type="tel" placeholder="+374 XX XXX XXX" required>
+        </div>
+        <div class="form-group">
+          <label for="r_pass">Գաղտնաբառ</label>
+          <input id="r_pass" class="input" type="password" placeholder="••••••••" required>
+        </div>
+        <button type="button" class="btn btn-submit" id="btnReg">Գրանցվել</button>
+        <p id="regMsg" class="form-message"></p>
+      </form>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <h2>Մուտք</h2>
+        <p>Մուտք գործեք ձեր հաշիվ</p>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="l_email">Էլ. փոստ</label>
+          <input id="l_email" class="input" type="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="l_pass">Գաղտնաբառ</label>
+          <input id="l_pass" class="input" type="password" placeholder="••••••••" required>
+        </div>
+        <button type="button" class="btn btn-submit" id="btnLogin">Մուտք գործել</button>
+        <p id="logMsg" class="form-message"></p>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -38,7 +78,9 @@ btnReg.onclick = async ()=>{
   fd.append('password', r_pass.value);
   const r = await fetch('php/auth_register.php',{method:'POST',body:fd});
   const j = await r.json().catch(()=>({ok:false,msg:'Սերվերի սխալ'}));
-  regMsg.textContent = j.ok ? 'Գրանցումը հաջողվեց, այժմ մուտք գործեք' : (j.msg||'Սխալ');
+  const msg = document.getElementById('regMsg');
+  msg.textContent = j.ok ? 'Գրանցումը հաջողվեց, այժմ մուտք գործեք' : (j.msg||'Սխալ');
+  msg.className = 'form-message ' + (j.ok ? 'success' : 'error');
 };
 
 btnLogin.onclick = async ()=>{
@@ -47,10 +89,15 @@ btnLogin.onclick = async ()=>{
   fd.append('password', l_pass.value);
   const r = await fetch('php/auth_login.php',{method:'POST',body:fd});
   const j = await r.json().catch(()=>({ok:false,msg:'Սխալ'}));
+  const msg = document.getElementById('logMsg');
   if (j.ok){
     localStorage.setItem('customer', JSON.stringify(j));
-    logMsg.textContent = 'Բարի վերադարձ, ' + j.name + ' ' + j.lastname + ' (ID: '+ j.customer_id + ')';
-  } else logMsg.textContent = j.msg || 'Սխալ';
+    msg.textContent = 'Բարի վերադարձ, ' + j.name + ' ' + j.lastname + ' (ID: '+ j.customer_id + ')';
+    msg.className = 'form-message success';
+  } else {
+    msg.textContent = j.msg || 'Սխալ';
+    msg.className = 'form-message error';
+  }
 };
 </script>
 </body></html>

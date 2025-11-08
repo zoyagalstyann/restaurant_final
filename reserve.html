@@ -2,23 +2,48 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="assets/style.css"><title>Ամրագրում</title>
 </head><body>
-<!-- navbar --> <div class="nav"><div class="container"><div><b>La Tavola</b></div>
+<div class="nav"><div class="container"><div><b>La Tavola</b></div>
 <div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
 <a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
 
+<div class="page-header">
+  <div class="container">
+    <h1>Ամրագրել Սեղան</h1>
+    <p>Ամրագրեք ձեր նախընտրած սեղանը La Tavola ռեստորանում</p>
+  </div>
+</div>
+
 <div class="container">
-  <h2>Ամրագրում</h2>
-  <div class="card">
-    <label>Օգտվողի ID (մուտք գործելուց հետո) </label>
-    <input id="cid" class="input" placeholder="օր. 1">
-    <label>Ամսաթիվ</label>
-    <input id="date" type="date" class="input">
-    <label>Անձերի քանակ</label>
-    <input id="guests" type="number" class="input" min="1">
-    <label>Սեղանի համար</label>
-    <input id="table" type="number" class="input" min="1">
-    <br><button class="btn btn-primary" id="btnRes">Ամրագրել</button>
-    <p id="resMsg"></p>
+  <div class="form-wrapper">
+    <div class="form-card">
+      <h2>Ամրագրման Մանրամասներ</h2>
+      <form id="reservationForm">
+        <div class="form-group">
+          <label for="cid">Օգտվողի ID</label>
+          <input id="cid" class="input" type="text" placeholder="Օր. 1" required>
+          <small>Մուտք գործելուց հետո ստացել եք ձեր ID-ը</small>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Ամսաթիվ</label>
+          <input id="date" type="date" class="input" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="guests">Անձերի քանակ</label>
+            <input id="guests" type="number" class="input" min="1" placeholder="Օր. 2" required>
+          </div>
+          <div class="form-group">
+            <label for="table">Սեղանի համար</label>
+            <input id="table" type="number" class="input" min="1" placeholder="Օր. 5" required>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-submit" id="btnRes">Հաստատել Ամրագրումը</button>
+        <p id="resMsg" class="form-message"></p>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -32,7 +57,9 @@ document.getElementById('btnRes').onclick = async () => {
   fd.append('table_number', document.getElementById('table').value);
   const r = await fetch('php/reservation_create.php', {method:'POST', body:fd});
   const j = await r.json().catch(()=>({ok:false,msg:'Սերվերի սխալ'}));
-  document.getElementById('resMsg').textContent = j.ok ? 'Ամրագրումը հաջողվեց' : (j.msg||'Սխալ');
+  const msg = document.getElementById('resMsg');
+  msg.textContent = j.ok ? 'Ամրագրումը հաջողվեց' : (j.msg||'Սխալ');
+  msg.className = 'form-message ' + (j.ok ? 'success' : 'error');
 };
 </script>
 </body></html>
