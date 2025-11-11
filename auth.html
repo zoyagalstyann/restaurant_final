@@ -3,8 +3,9 @@
 <link rel="stylesheet" href="assets/style.css"><title>Մուտք / Գրանցում</title>
 </head><body>
 <div class="nav"><div class="container"><div><b>La Tavola</b></div>
-<div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
-<a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
+<div class="nav-actions"><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
+<a href="cart.html">Վճարում</a><a href="auth.html" data-auth="login">Մուտք / Գրանցում</a>
+<div class="nav-account" data-auth="account"><a href="account.html" class="nav-account-name">Իմ հաշիվ</a><button type="button" class="btn-link nav-logout">Ելք</button></div></div></div></div>
 
 <div class="page-header">
   <div class="container">
@@ -69,6 +70,10 @@
 
 <script src="js/api.js"></script>
 <script>
+const existingCustomer = getCustomer();
+if (existingCustomer) {
+  window.location.href = 'account.html';
+}
 btnReg.onclick = async ()=>{
   const fd = new FormData();
   fd.append('name', r_name.value.trim());
@@ -91,9 +96,10 @@ btnLogin.onclick = async ()=>{
   const j = await r.json().catch(()=>({ok:false,msg:'Սխալ'}));
   const msg = document.getElementById('logMsg');
   if (j.ok){
-    localStorage.setItem('customer', JSON.stringify(j));
-    msg.textContent = 'Բարի վերադարձ, ' + j.name + ' ' + j.lastname + ' (ID: '+ j.customer_id + ')';
+    setCustomer(j);
+    msg.textContent = 'Բարի վերադարձ, ' + j.name + ' ' + j.lastname;
     msg.className = 'form-message success';
+    window.location.href = 'account.html';
   } else {
     msg.textContent = j.msg || 'Սխալ';
     msg.className = 'form-message error';
