@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="hy"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="assets/style.css"><title>Իմ հաշիվը</title>
+</head><body>
+<div class="nav"><div class="container"><div><b>La Tavola</b></div>
+<div class="nav-actions"><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
+<a href="cart.html">Վճարում</a><a href="auth.html" data-auth="login">Մուտք / Գրանցում</a>
+<div class="nav-account" data-auth="account"><a href="account.html" class="nav-account-name">Իմ հաշիվ</a><button type="button" class="btn-link nav-logout">Ելք</button></div></div></div></div>
+
+<div class="page-header">
+  <div class="container">
+    <h1>Բարի վերադարձ, <span id="accName">...</span></h1>
+    <p>Ձեր անձնական վահանակը՝ պատվերների և ամրագրումների արագ կառավարման համար</p>
+  </div>
+</div>
+
+<section class="account-page">
+  <div class="container">
+    <div class="account-grid">
+      <div class="account-card">
+        <h2>Հաշվի տվյալներ</h2>
+        <div class="account-info">
+          <div>
+            <div class="account-label">Հաճախորդի ID</div>
+            <div class="account-value" id="accId"></div>
+          </div>
+          <div>
+            <div class="account-label">Էլ. փոստ</div>
+            <div class="account-value" id="accEmail"></div>
+          </div>
+        </div>
+        <p>Պահպանեք այս տվյալները՝ պատվերներն ու ամրագրումները արագ ավարտելու համար։</p>
+      </div>
+
+      <div class="account-card">
+        <h2>Արագ գործողություններ</h2>
+        <p>Ընտրեք հաջորդ քայլը՝ մեր ծառայություններից օգտվելու համար։</p>
+        <div class="quick-links">
+          <a class="btn btn-submit" href="menu.html">Դիտել մենյուն</a>
+          <a class="btn btn-secondary-large" href="reserve.html">Ամրագրել սեղան</a>
+          <a class="btn btn-secondary-large" href="cart.html">Դիտել պայուսակը</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="js/api.js"></script>
+<script>
+const customer = requireCustomer();
+if (customer) {
+  document.getElementById('accName').textContent = customer.name + ' ' + customer.lastname;
+  document.getElementById('accId').textContent = '#' + customer.customer_id;
+  document.getElementById('accEmail').textContent = customer.email || '—';
+}
+</script>
+</body></html>

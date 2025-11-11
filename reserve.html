@@ -3,8 +3,9 @@
 <link rel="stylesheet" href="assets/style.css"><title>Ամրագրում</title>
 </head><body>
 <div class="nav"><div class="container"><div><b>La Tavola</b></div>
-<div><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
-<a href="cart.html">Վճարում</a><a href="auth.html">Մուտք / Գրանցում</a></div></div></div>
+<div class="nav-actions"><a href="index.html">Գլխավոր</a><a href="menu.html">Մենյու</a><a href="reserve.html">Ամրագրում</a>
+<a href="cart.html">Վճարում</a><a href="auth.html" data-auth="login">Մուտք / Գրանցում</a>
+<div class="nav-account" data-auth="account"><a href="account.html" class="nav-account-name">Իմ հաշիվ</a><button type="button" class="btn-link nav-logout">Ելք</button></div></div></div></div>
 
 <div class="page-header">
   <div class="container">
@@ -49,15 +50,29 @@
 
 <script src="js/api.js"></script>
 <script>
+const cidInput = document.getElementById('cid');
+const storedCustomer = getCustomer();
+if (storedCustomer) {
+  cidInput.value = storedCustomer.customer_id;
+  cidInput.readOnly = true;
+  cidInput.classList.add('input-readonly');
+}
+
 document.getElementById('btnRes').onclick = async () => {
+  const msg = document.getElementById('resMsg');
+  const customer = getCustomer();
+  if (!customer) {
+    msg.textContent = 'Ամրագրելու համար նախ մուտք գործեք ձեր հաշիվ։';
+    msg.className = 'form-message error';
+    return;
+  }
   const fd = new FormData();
-  fd.append('customer_id', document.getElementById('cid').value.trim());
+  fd.append('customer_id', customer.customer_id);
   fd.append('reservationdate', document.getElementById('date').value);
   fd.append('numberofguests', document.getElementById('guests').value);
   fd.append('table_number', document.getElementById('table').value);
   const r = await fetch('php/reservation_create.php', {method:'POST', body:fd});
   const j = await r.json().catch(()=>({ok:false,msg:'Սերվերի սխալ'}));
-  const msg = document.getElementById('resMsg');
   msg.textContent = j.ok ? 'Ամրագրումը հաջողվեց' : (j.msg||'Սխալ');
   msg.className = 'form-message ' + (j.ok ? 'success' : 'error');
 };

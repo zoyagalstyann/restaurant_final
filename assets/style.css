@@ -76,6 +76,12 @@ body {
   justify-content: space-between;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .nav a {
   color: #fff;
   text-decoration: none;
@@ -104,6 +110,31 @@ body {
 
 .nav a:hover::after {
   width: 100%;
+}
+
+.nav-account {
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-account-name {
+  margin: 0;
+  font-weight: 600;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #fbbf24;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.3s ease;
+}
+
+.btn-link:hover {
+  color: #f97316;
 }
 
 .hero-modern {
@@ -1282,4 +1313,65 @@ label {
     width: 100%;
     justify-content: space-between;
   }
+}
+.input-readonly {
+  background: rgba(15, 118, 110, 0.08);
+  color: #0f172a;
+  cursor: not-allowed;
+}
+
+.account-page {
+  padding: 64px 0 80px;
+  background: linear-gradient(180deg, rgba(15, 118, 110, 0.05), transparent);
+}
+
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.account-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 15px 40px rgba(15, 118, 110, 0.12);
+  border: 1px solid rgba(15, 118, 110, 0.08);
+  animation: fadeIn 0.6s ease;
+}
+
+.account-card h2 {
+  margin-top: 0;
+}
+
+.account-info {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 24px;
+}
+
+.account-label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0f766e;
+  margin-bottom: 4px;
+}
+
+.account-value {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.quick-links .btn {
+  flex: 1;
+  min-width: 160px;
+  text-align: center;
 }
