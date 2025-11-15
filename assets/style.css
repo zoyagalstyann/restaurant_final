@@ -109,7 +109,7 @@ body {
 .hero-modern {
   position: relative;
   height: 600px;
-  background: linear-gradient(135deg, #0f766e 0%, #059669 100%);
+  background: url('https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,8 +123,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover;
-  opacity: 0.2;
+  background: inherit;
   animation: pulse 8s ease-in-out infinite;
 }
 
@@ -134,7 +133,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(15, 118, 110, 0.9) 0%, rgba(5, 150, 105, 0.85) 100%);
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.7) 0%, rgba(5, 150, 105, 0.65) 100%);
 }
 
 .hero-overlay::before {
@@ -1214,7 +1213,37 @@ label {
   font-size: 1rem;
 }
 
+.toast {
+  position: fixed;
+  top: 100px;
+  right: 24px;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.4);
+  z-index: 1000;
+  animation: slideInRight 0.4s ease-out;
+  font-weight: 500;
+  min-width: 250px;
+}
+
+.toast.error {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4);
+}
+
+.toast.hide {
+  animation: slideInRight 0.4s ease-out reverse;
+}
+
 @media (max-width: 768px) {
+  .toast {
+    right: 16px;
+    left: 16px;
+    min-width: auto;
+  }
+
   .hero-title {
     font-size: 2.5rem;
   }
